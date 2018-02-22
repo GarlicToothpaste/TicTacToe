@@ -2,8 +2,16 @@ from IPython.display import clear_output
 
 def main():
     board = [" "," "," "," "," "," "," "," "," "]
-    tup = player_input()
+    print("Welcome to TicTacToe!")
+    gameState = True
 
+    while(gameState):
+        
+
+    tup = player_input()
+    #display_board(board)
+
+    board = place_marker(board, "$", 1)
     display_board(board)
 def display_board(board):
     clear_output()
@@ -23,5 +31,27 @@ def player_input():
         return ("X" , "O")
     else:
         return( "O", "X")
+
+def place_marker(board, marker, position):
+    board[position] = marker
+
+    return board
+
+def win_check(board, mark):
+
+def space_check(board,position):
+    if(board[position]== " "):
+        return True
+    else:
+        return False
+
+def full_board_check(board):
+    if(" " in board):
+        return False
+    else:
+        return True
+def player_choice(board):
+
+def replay():
 
 main()
