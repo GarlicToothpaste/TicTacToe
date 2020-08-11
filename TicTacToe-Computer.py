@@ -19,11 +19,18 @@ def cpu_position():
     return empty_spaces[get_position] + 1
 
 def player_input():
-    mark = input("Player 1 do you want to be X or O? ")
+    ask_string = " "
+
+    if ((not isPlayingComputer) or (isPlayingComputer and not computerDifficulty == 'hard')):
+        ask_string = "Player 1 do you want to be X or O? "
+    else:
+        ask_string = "Player 2 do you want to be X or O? "
+
+    mark = input(ask_string)
 
     while not (mark == "X" or mark == "O"):
         print()
-        mark = input("Player 1 do you want to be X or O? ")
+        mark = input(ask_string)
         
     if(mark == "X"):
         return ("X", "O")
@@ -39,7 +46,7 @@ def place_marker(marker, position, checking, printing):
         print()
 
     if(win_check(marking)):
-        if (isPlayingComputer and g_vars['currentPlayer'] == 2):
+        if (isPlayingComputer and g_vars['currentPlayer'] == aiPlayer):
             if printing:
                 print(f'The computer has won the game! Good luck next time!')
         else:
@@ -59,10 +66,16 @@ def remove_marker(position):
 def change_turn():
     if (g_vars['currentPlayer'] == 1):
         g_vars['currentPlayer'] = 2
-        g_vars['marking'] = tup[1]
+        if isPlayingComputer and computerDifficulty == 'hard':
+            g_vars['marking'] = tup[0]
+        else:
+            g_vars['marking'] = tup[1]
     else:
         g_vars['currentPlayer'] = 1
-        g_vars['marking'] = tup[0]    
+        if isPlayingComputer and computerDifficulty == 'hard':
+            g_vars['marking'] = tup[1]
+        else:
+            g_vars['marking'] = tup[0]    
 
 def win_check(marker):
     condition_one = board[0] == marker and board[1] == marker and board[2] == marker # top row completed
@@ -144,19 +157,31 @@ while not (mode == '1' or mode == '2'):
 
 isPlayingComputer = True if mode == '2' else False
 computerDifficulty = ''
+aiPlayer = 0
 
-if (isPlayingComputer):
-    print(f'Alright cool, Player 2 will be the computer then.\n')
-    print(f'What difficulty of the computer do you want to select? Choose between Easy or Hard.')
-    while not (computerDifficulty == 'easy' or computerDifficulty == 'hard'):
+if isPlayingComputer:
+    print(f'What difficulty of the computer do you want to select? Choose between Easy, Medium or Hard.')
+    while not (computerDifficulty == 'easy' or computerDifficulty == 'medium' or computerDifficulty == 'hard'):
         computerDifficulty = input(f'Input difficulty here: ').lower()
         print()
+
+if (isPlayingComputer and (computerDifficulty == 'easy' or computerDifficulty == 'medium')):
+    print(f'Alright cool, Player 2 will be the computer then.\n')
+elif isPlayingComputer and computerDifficulty == 'hard':
+    print(f'Alright cool, Player 1 will be the computer then.\n')
+
 
 tup = player_input()
 print()
 
-g_vars['marking'] = tup[0]
 g_vars['currentPlayer'] = 1
+
+if (isPlayingComputer and computerDifficulty == 'hard'):
+    g_vars['marking'] = tup[1]
+    aiPlayer = 1
+else:
+    g_vars['marking'] = tup[0]
+    aiPlayer = 2
 
 while (g_vars['gameState']):
     marking = g_vars['marking']
@@ -167,21 +192,37 @@ while (g_vars['gameState']):
         gameState = False
         break
     else:
-        if (g_vars['currentPlayer'] == 2 and isPlayingComputer):
-            if (computerDifficulty.lower() == 'easy'):
-                position = cpu_position()
-            else:
+
+        if g_vars['currentPlayer'] == 1:
+            if isPlayingComputer and aiPlayer == g_vars['currentPlayer']:
                 position = get_best_position()
-            print(f'Computer marks {marking} in square {position}!\n')
-        else:
-            position = -1
-            while not (position >= 1 and position <= 9):
-                try:
-                    while not (position >= 1 and position <= 9):
-                        position = int(input(f"Player {currentPlayer}, give a position from 1-9 on where to put {marking}: "))
+                print(f'Computer marks {marking} in square {position}!\n')
+            else:
+                position = -1
+                while not (position >= 1 and position <= 9):
+                    try:
+                        while not (position >= 1 and position <= 9):
+                            position = int(input(f"Player {currentPlayer}, give a position from 1-9 on where to put {marking}: "))
+                            print()
+                    except:
                         print()
-                except:
-                    print()
+        else:
+            if isPlayingComputer and aiPlayer == g_vars['currentPlayer']:
+                if (computerDifficulty == 'easy'):
+                    position = cpu_position()
+                else:
+                    position = get_best_position()
+                print(f'Computer marks {marking} in square {position}!\n')
+            else:
+                position = -1
+                while not (position >= 1 and position <= 9):
+                    try:
+                        while not (position >= 1 and position <= 9):
+                            position = int(input(f"Player {currentPlayer}, give a position from 1-9 on where to put {marking}: "))
+                            print()
+                    except:
+                        print()               
+
         if (space_check(int(position)-1)):
             place_marker(g_vars['marking'], int(position)-1, True, True)
         else:
