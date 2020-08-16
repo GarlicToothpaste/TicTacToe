@@ -1,8 +1,9 @@
 @echo off 
 if exist .\"TicTacToe Networking" (
     rmdir /s /q "TicTacToe Networking"
-    echo. && echo Deleted original folder of TicTacToe Networking!
+    echo. && echo Deleted original folder of TicTacToe Networking! && echo.
 )
+REM Make sure that pyinstaller is installed in your system!
 pyinstaller --onedir TicTacToe-Networking.py --name "TicTacToe Networking" && echo. && echo Successfully created the executable file for TicTacToe Networking!
 move dist\"TicTacToe Networking" . && echo. && echo Moved directory successfully!
 rmdir dist && echo. && echo Successfully removed dist folder...

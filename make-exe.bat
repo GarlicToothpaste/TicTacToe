@@ -1,8 +1,9 @@
 @echo off 
 if exist .\"TicTacToe in Python" (
     rmdir /s /q "TicTacToe in Python"
-    echo. && echo Deleted original folder of TicTacToe in Python!
+    echo. && echo Deleted original folder of TicTacToe in Python! && echo.
 )
+REM Make sure that pyinstaller is installed in your system!
 pyinstaller --onedir TicTacToe-Computer.py --name "TicTacToe in Python" && echo. && echo Successfully created the executable file for TicTacToe in Python!
 move dist\"TicTacToe in Python" . && echo. && echo Moved directory successfully!
 rmdir dist && echo. && echo Successfully removed dist folder...
